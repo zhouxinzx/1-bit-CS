@@ -1,0 +1,187 @@
+
+\section{DESIGN}
+
+In this section,  we introduce the design of CS-ASL system. The key idea behind CS-ASL is to turn the localization into sparse recovery problem of 1-bit compressive sensing.  
+Firstly, we introduce a CS-ASL-BF method with brute force. Then we describe a CS-ASL-GD method with gradient descent. After the two methods are proposed, we do further local refinement to improve the accuracy of the localization.
+
+\subsection{CS-ASL-BF with brute force}
+CS-ASL-BF is based on the idea of brute force searching. Grid meshing leading to a large number of points, we checkout them one by one with brute force searching, consider whether the point we are searching for is the one in target subdomain. Every point can reach an assumed measure vector by the relative location to $m$ lines, we believe the point with its assumed measure vector most approach to matrix $D$ is what we search for. In our CS framework, for the ${poin{t_i}}$ searching in matrix $X$ we set its index location as $1$ and other location as $0$, leading to an error matrix
+
+\begin{equation}\label{eq:eps}
+error_i=sign(ASX_i)-D
+\end{equation}where $1\leq i \leq n$, every point of $n$ maps an error matrix, in that matrix defines none-zero numbers $\bm{nnz{_i}}$ as the cost function of that point. Finally the points with the minimum of cost function are in the target subdomain and their average value is the location we ultimately determine.
+\begin{algorithm}
+\caption{CS-ASL-BF with brute force}
+\KwIn { Coefficient matrix $A$ \\
+\hspace{0.41in} Point matrix $S$\\
+\hspace{0.41in} Measure Data $D$
+}
+\KwOut {Acoustic source location}
+
+\textbf{Step 1:} Initializing the calculated matrix $X \leftarrow 0$;
+
+\textbf{Step 2:} Computing the the cost function($nnz$) of the whole points: \\
+\For{$i \leftarrow 1$ \textbf{to} $n$}
+{
+     Set the $i$th position of $X$ to 1: $X_i=X(i) \leftarrow 1$;\\
+     $ error_i=sign(ASX_i)-D$;\\
+     $nnz_i \leftarrow$ none-zero number of $error_i$;\\
+     $X \leftarrow 0$;\\
+}
+\textbf{Step 3:} Find the points with the minimum $nnz$ value. \\
+\textbf{Step 4:} Determine the target location by the average of points' location in Step 3.
+\end{algorithm}
+
+\subsection{CS-ASL-GD with gradient descent}
+CS-ASL-BF performs extremely well in practical test. It can even obtain a high precision location when bit-flipping or other measure errors occur.
+However, when we get an accurate location, meanwhile the huge number of the point searchings lead to high time complexity, which may slow down our system. To strengthen our method, we put forward a CS-ASL-GD method using gradient descent to confirm the real source acoustic point instead of searching for one point by one point.
+
+We can turn the location problems to solve the linear equation with one unknown. One classical method in signal processing fields is bringing in gradient, searching for the points with maximum probability in every iteration process by gradient descent, in result, determine the real source acoustic point in the final time. CS-ASL-GD method is based on it.
+
+Here our estimated matrix $X$ represents the probability of the $n$ points in target subdomain. Each iteration, we calculate the gradient at first, then update the probability of the $n$ points according to the step-size that gradient decreases by. 
+\begin{equation}\label{eq:eps}
+\varDelta=sign(ASX)-D
+ \end{equation}Eq.6 means the increment of the functional value.
+ \begin{equation}\label{eq:eps}
+\bigtriangledown=sign((AS)'*\varDelta)
+ \end{equation}Eq.7 gets the gradient $\bigtriangledown$ in Eq.4, aiming to get a solution to vector $X$. 
+ \begin{equation}\label{eq:eps}
+X=X-\mu *\bigtriangledown
+ \end{equation}Eq.8 figures out a new probability of the $n$ points. $\mu$ present the gradient descent step, in traditional gradient descent process choosing an appropriate step-size $u$ is essential. If that value is large, we cannot obtain a more accurate probability. Otherwise if the value is too small, the change of the probability will be unapparent. One of the advantages of our 1-bit CS framework is that we introduce the sign function,  utilizing the 1-bit 0/1 information instead of concrete measure data, not only make iteration rapidly convergence but provides adequate slacks to construct gradient descent without an extremely accurate step-size. We choose the points with the maximum probability in vector $X$, confirming other points outsides the target area. Every iteration process excludes a large number of unnecessary points, which can rapid convergence to the area with acoustic source.
+ \begin{equation}\label{eq:eps}
+\hat{X_{i}}=
+\left\{\begin{matrix}
+1 ~~ $if$~~    X_i=max(X),\\
+0 ~~ $if$~~   X_i \neq max(X),
+\end{matrix}\right.
+ \end{equation}where $1\leq i \leq n$, Eq.9 introduces a vector $\hat{X}$,  the points with maximum probability are all set 1, consider they  has the same probability to exist in target subdomain in this iteration,  no more determine the source location with other points. Then we use Eq.10 to make normalization processing, guarantee vector $X$ record the probabilities of the whole points, as input to next interation.
+ \begin{equation}\label{eq:eps}
+ X=\hat{X}/\sum\limits_{i=1}^n\hat{X_{i}}
+ \end{equation}
+ 
+ Several iterations later,  the probability of few points in vector $X$ keeps a large and stable value. Eventually, we regard the index points with a nonzero  value in  vector $X$ as the target points in our localization area.
+ 
+ However, in real situations the kinds of error especially bit flipping seriously affect the performance of the system. Since what the gradient descent method search for is optimal points in one part, when bit-flipping occurs, the points we obtain often include several points outside the target sub-region without any handling. Here we  make the points gathering from gradient decease method as suspicious points, then adapt the CS-ASL-BF method to suspicious points for further searching, believe the points with nonzero value in matrix $X$ as the final points in real localization area.
+ 
+ \begin{algorithm}
+\caption{CS-ASL-GD with gradient descent}
+\KwIn { Coefficient matrix $A$ \\
+\hspace{0.41in} Point matrix $S$\\
+\hspace{0.41in} Measure Data $D$\\
+\hspace{0.41in} Maximum number of iterations $maxiter$
+}
+\KwOut {Acoustic source location}
+
+\textbf{Step 1:} Initializing the probability vector $X$:\\
+$\hat{X} \leftarrow 1$;\\
+$X=\hat{X}/\sum\limits_{i=1}^n\hat{X_i}$;\\
+\textbf{Step 2:} Searching for the points with maximum probability in target subdomain: \\
+\For{$i \leftarrow 1$ \textbf{to} $maxiter$}
+{
+     $\varDelta=sign(ASX)-D$;\\
+     $\bigtriangledown=sign((AS)'*\varDelta)$;\\
+     $X=X-\mu*\bigtriangledown$;\\
+     $index=find((X_i==max(X))$;\\
+     $\hat{X}(1:n)=0$;\\
+     $\hat{X}(index)=1$;\\
+     Normalization processing to vector $X$:\\
+     $X=\hat{X}/\sum\limits_{i=1}^n\hat{X_n}$;\\
+     $i=i+1$;\\
+}
+\textbf{Step 3:} Find the points with the maximum probability as the suspicious points in target area. \\
+\textbf{Step 4:} Utilize the CS-ASL-BF method for further filtrating among suspicious points. Believing the average of final filtrated points' location as the target location.
+\end{algorithm}
+
+\subsection{CS-ASL-LR with local refinement}
+In our 1-bit CS framework, we utilize the sampling points in target subdomain to present the acoustic source. CS-ASL-BF  with brute force can find the whole points in target subdomain even occurs bit-filpping, as a result may slow down the system efficiency. CS-ASL-GD with bit fipping tolerance brings in gradient descent, although can get results fast, only determine several points in the target area not the whole points, leading to localization error in certain degree, which makes its accuracy inferior to CS-ASL-BF in high error conditions especially bit-flipping. Here we regard the CS-ASL-BF as the best accuracy  standard, making more efforts to make the accuracy of the CS-ASL more  approach to CS-ASL-BF with high efficiency. Aiming at above question, we have once considered finding the bit flipping nodes in the process of iterations, recover them and localize again by CS-ASL-GD method. However,  CS-ASL-GD has determine a more precise location, repeat work only make the system more complicated. Owing to the area of the target subdomain is adequate small, only make further amelioration searching by CS-ASL-BF method for the points neighbor to the location determined by CS-ASL-GD method can overcome this limit without raising much complexity. Results collect more points belong to the target subdomain leading to a more accurate localization.
+%Traditional localization usually use the concrete measurement values to get an accurate location. However, the errors in the measurement seriously affect the performance. In this paper, we utilize the 1-bit information about the acoustic source on the left or on the right of the midperpendicular of the double microphones phones instead of the concrete measurement values, which leads to enough slack for localization in real error situations. As long as the number of the sensors is sufficient, as the area of the subdomain divided by  midperpendicular decreases, finally determine the points in final subdomain as the target. Basic 1-bit CS performs better even in high error environment, it can find the whole points in target subdomain, however every point has to calculate one time which tremendously slow down the efficiency. Although the points obtaining from the advanced 1-bit CS is inside the target subdomain, what it finds is some not all points, leading its behavior inferior to basic 1-bit CS especially in high error conditions. We make further amelioration searching for the points neighbor to the points that we have found in target subdomain by basic 1-bit CS. Results collect more points belong to the target subdomain leading to a more accurate localization.
+  
+ 
+   
+
+%For the sake of presentation, until now we have described HPI-SBL in an ideal case where a complete and perfect node sequence can be obtained.
+%In this section, we describe how to make HPI-SBL work well under more realistic conditions.
+%
+%%Basic HPI-SBL can find a solution to this feasibility program only if there is a region satisfying all the constraints.
+%In the practical application, if two nodes are very close to each other along the direction of event propagation, they would detect the event almost simultaneously.
+%In this case, the node order in the sequence may occur flip.
+%%For instance, the true sequence is $NodeSeq ( \cdots ,i,j, \cdots )$, but the detected sequence is $NodeSeq ( \cdots ,j,i, \cdots )$.
+%Basic HPI-SBL might fail to find a feasible solution that satisfies all the constraints when sequence flip occurs.
+%For example, as shown in Fig. 2, the right middle region identifies by the node sequence $NodeSeq (D B C A)$.
+%Once the order of node A and C occurs flip in $NodeSeq (D B C A)$, the region corresponding to $NodeSeq (D B A C)$ will not exist, basic HPI-SBL can not give the accurate estimation.
+%In this section, we propose a robust solution to address the problem of sequence flip, called probabilistic HPI-SBL.
+%
+% Considering the uncertainty of the measurement with the node sequence $NodeSeq( \cdots ,i,j, \cdots )$, the probability of ${d_i} < {d_j}$ can be described as
+% \begin{equation}\label{eq1}
+% ASW=D
+% %p({d_i} < {d_j})>\alpha
+% \end{equation}
+%Eq.\ref{eq1} means that the probability of the acoustic source in the left side of the the half-plane $H_{ij}$ is $\alpha$, and the right side is $1-\alpha$.
+%After dividing the localization space into some discrete grids, the weight of the grid point in the left side of the the half-plane $H_{ij}$ is $\alpha$, and the weight of the grid point in the right side of the the half-plane $H_{ij}$ is $1-\alpha$.
+%
+%Besides these key constraints mentioned in Basic HPI-SBL, we can also have some relaxed constraints during the construction of the half plane.
+%For example, given $NodeSeq (A C B D)$, we can get three key constraints $SA<SC$, $SC<SB$ and $SB<SD$ from the two adjacent nodes;
+%and some relaxed constraints $SA<SB$, $SA<SD$ and $SC<SD$ from the two nonadjacent nodes in the node sequence.
+%Given the node sequences with $N$ nodes, we can use all  $N(N - 1)/2$  constraints to further improve the localization robustness.
+%By processing  $N(N - 1)/2$ half-planes, we can compute the cumulative weight $w$ of each discrete grid point $\bm{x}$
+%
+%\begin{equation}\label{eq2}
+%w(\bm{x})=\sum\limits_{k=1} ^{N-1}\alpha(k).
+%\end{equation}
+%The region with the highest probability is the final region of the acoustic source
+%\begin{equation}\label{eq3}
+%\hat{\bm{X_s}}=arg \max_{\bm{x} \in R}w(\bm{x}).
+%\end{equation}
+%The centroid of the final region is the estimated location of the acoustic source.
+%
+%To summarize, the probabilistic HPI-SBL is presented in Algorithm 1.
+%The input are the node sequences and anchor locations; the output is the location of the acoustic source.
+%Step 1 sets the the initial weight of each discrete grid point.
+%Step 2 uses the node sequence to get multiple half-planes, then computes the cumulative weight.
+%Step 3 adopts the center of the final intersection region as the location of acoustic source.
+%
+%\begin{algorithm}
+%\caption{Probabilistic HPI-SBL}
+%\KwIn { The location of $N$ smartphones \\
+%\hspace{0.41in} The node sequence of the acoustic source for\\
+%\hspace{0.41in} $N$ smartphones
+%}
+%\KwOut {Location of the acoustic source}
+%
+%\textbf{Step 1:} Setting the weight of each grid point  $w(k) \leftarrow 0$;
+%
+%\textbf{Step 2:} Computing the cumulative weight by processing node sequence: \\
+%\hspace{0.0in} Contructing half planes by processing node sequence;\\
+%\For{$i \leftarrow 1$ \textbf{to} $N-1$}
+%{
+%\For{$j \leftarrow i+1$ \textbf{to} $N$}
+%{
+%Contructing half plane $H_{ij}$\\
+%Updating Weight $w(k)$ for each grid point;\\
+%}
+%}
+%\textbf{Step 3:} The center of region with the highest probability is the location of acoustic source.
+%\end{algorithm}
+%
+%\subsection{Bit Flips}
+%
+%
+%\iffalse
+% \subsection{Complexity Analysis}
+% This section provides the complexity analysis for the proposed
+% LPSBL design. It needs to be emphasized that
+% LPSBL itself adopts an asymmetric design in which sensor
+% nodes need only to detect and report the events. Therefore,
+% we only analyze the computational cost on the node sequence
+% processing side, where resources are plentiful.
+%
+% SBL: Calculating the Spearman’s coefficient and Kendall’s Tau
+% between two sequences are $O(N)$ and $O(N^2)$ operations,
+% respectively. Since the location sequence table is of size
+% $O(N^4)$, searching through it takes $O(N^5)$ and $O(N^6)$ operations,
+% respectively~\cite{yedavalli2008sequence}.
+%
+% RSBL: Discrete space grid  M
+%\fi
+
+

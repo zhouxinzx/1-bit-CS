@@ -1,0 +1,68 @@
+\section{Introduction}
+
+Acoustic source localization (ASL) has extensive applications in civil and military field~\cite{Meesookho2008,sallai2011acoustic,Liu2017Multiple}. The common array-based
+method with microphones to ASL utilize several microphones
+to acquire multiple signals simultaneously, which have some
+limitations such as regard to strict clock synchronization of the multiple sensors, distances between the microphones,
+and concern about the large range of sense for specific applications.  Wireless acoustic sensor networks
+(WASNs)  with dual microphone are appropriate to solve these questions. In WASNs, multiple wireless microphone sensors are distributed spatially 
+in a localization environment, which communicate by ad-hoc network. The microphone nodes can be physically deployed in a large localization area and long range limitations disappear thanks to the wireless communication. With the popularity of personal portable
+computing devices, the ability of sensor rapid deployment improves significantly, making acoustic source location in WASN become increasingly feasible in practical applications.
+
+Previous literature has proposed mass of algorithms for acoustic source localization problem in sensor networks. In the last few years, research generally utilized single microphone sensors on distributed acoustic source localization system  with a hard work on clock synchronization~\cite{Canclini2013}. Recent years, researchers concentrated their attention on acoustic
+nodes with two or more synchronized microphones.
+Aarabi utilized the datas acquired by 10 dual-microphones distributed randomly in a room to locate three speakers~\cite{aarabi1900fusion}. Wu proposed a double acoustic source positioning method
+in a distributed way with three two-microphone arrays, local DOA estimates are communicated in WASN~\cite{wu2012fusion}. However, most of the system need special signal acquisition equipment to collect the multiple synchronized signal. With the improvement of the computing and communication technology in mobile, most mobile devices (e.g. smart phones,
+tablets and laptops) are equipped with multiple microphones
+onboard. There have existed some work that adopted the smartphone with double microphones to Snoop the Keystroke\cite{zhu2014context,Liusnooping}. 
+
+
+
+%The compressive sensing (CS) framework aims to ease the burden on analog-to-digital converters (ADCs) by reducing the sampling rate required to acquire and stably recover sparse signals. 
+Compressive sensing (CS) has already shown good application prospects in the field of localization.
+Zhang \emph{et al.}~\cite{zhang2011sparse} proposed a novel compressive sensing based approach for sparse target counting and positioning in wireless sensor networks. 
+Feng, \emph{et al.}~\cite{feng2010compressive}
+%~\cite{feng2012received} 
+proposed accurate and real-time indoor positioning solutions using compressive sensing. 
+Recently, Jacques, \emph{et al.}~\cite{Laska2013Robust} proposed 1-bit compressive sensing in mathematics and proposed BHIT algorithm. Yan, \emph{et al.}~\cite{Yan2012}  proposed AOP algorithm reconstructing the 1-bit signals againt bit-flipping.
+%
+In this paper, we propose a new solution to
+the acoustic source localization by constructing an ad-hoc communicated by dual-microphone
+smartphones. 
+%In a typical WASN, considering the limit on energy consumption and communication bandwidth in network, 
+it is desirable that only transmitt as little as possible data from multiple sensors to the sink node (processing 
+center). 
+%
+We transmmit only 1-bit left/right binary code as the sensor data in WASNs. 
+1-bit compressive sensing is particularly attractive in this scenario, due to its capability of reducing the communication and computational costs of local sensors. 
+%
+
+%用这三篇主持这句话
+% J. D. Haupt, W. U. Bajwa, M. Rabbat, and R. D. Nowak, “Compressed sensing for networked data,” IEEE Signal Process. Mag., vol. 25, no. 2, pp. 92–101, Mar. 2008.
+% Y. Shen, J. Fang, and H. Li, “One-bit compressive sensing and source location is wireless sensor networks” in Proc. Chin. Summit Int. Conf. Signal Inf. Process., 2013, pp. 379–383.
+% Amplitude-Aided 1-Bit Compressive Sensing Over Noisy Wireless Sensor Networks 2015 IEEE WCL
+
+%Petros, \emph{et al.}~\cite{boufounos20081}  proposed 1-bit compressed sensing that recovered the sparse signal within a scaling factor with 1-bit measurements. 
+%Laurent, \emph{et al.}~\cite{jacques2013robust}  investigate an alternative CS approach that shifts the emphasis from the sampling rate to the number of bits per measurement. 
+%Movahed, \emph{et al.}~\cite{movahed2012robust} %introduced a 1-bit compressed sensing reconstruction algorithm that is robust against bit flips. 
+
+
+Considering that 1-bit compressive sensing is particularly suitable for resource-constrained wireless sensor networks (WSNs), we investigate the ASL from 1-bit measurements obtained by a large number of dual-microphone smartphones.
+ASL is modeled  as the sparse recovery problem based on 1-bit compressive sensing.
+On the basis of the theory of 1-bit compressive sensing, we proposed some bit-flipping tolerance algorithms to solve the localization problem. To our knowledge, localization with the 1-bit compressive sensing has not been considered in the literature before.
+The main contributions of this article are in the followings: 
+
+\begin{enumerate}[(1)]
+\item  1-bit data is robust to measurement error, as long as they preserve the signs of the measurements.
+
+\item 1-bit data could reduce the overhead in the sensor network. 
+
+\end{enumerate}
+
+The rest of the article is organized as follows. Section \uppercase\expandafter{\romannumeral 2} presents the system model.
+Then, our methods are introduced in section \uppercase\expandafter{\romannumeral 3}.
+Section \uppercase\expandafter{\romannumeral 4} presents simulation results. 
+Finally, section \uppercase\expandafter{\romannumeral 5} concludes the whole article.
+
+
+

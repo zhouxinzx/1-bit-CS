@@ -1,0 +1,68 @@
+ \documentclass[journal]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage[cmex10]{amsmath}
+\usepackage{graphicx}
+\usepackage{graphics}
+ \usepackage{epstopdf}
+\usepackage{subfigure}
+\usepackage{epsfig}
+\usepackage{algorithmic}
+\usepackage[linesnumbered,ruled,slide]{algorithm2e}
+\usepackage{amsfonts}
+\usepackage{float}
+\usepackage{enumerate}
+\usepackage{verbatim}
+\usepackage{caption3}
+\usepackage{bm} %%公式加粗
+\usepackage[justification=centering]{caption}
+
+
+\begin{document}
+
+\title{1-Bit Compressive Sensing  Based Acoustic Source Localization  in Distributed Dual-Microphone Networks}
+
+%\thanks{Naigao Jin is the corresponding author.}  
+\author{\IEEEauthorblockN{Xin Zhou, Naigao Jin, Mingyi Yang, Lei Wang}\\
+\IEEEauthorblockA{School of Software, Dalian University of Technology, China\\
+Email: ngjin@dlut.edu.cn, lei.wang@dlut.edu.cn}
+}
+
+% make the title area
+\maketitle
+
+\thispagestyle{plain}
+\pagestyle{plain}
+
+\begin{abstract}
+%\boldmath
+Acoustic source localization in sensor network is a challenging task because of severe constraints on cost, energy, and effective range of sensor devices.
+To overcome these limitations in existing solutions, this paper formally describes, designs, implements, and evaluates a 1-bit compressive sensing method to acoustic source localization, i.e., CS-ASL, in distributed smartphone networks.
+We  collect the 1-bit binary left/right data  by estimating the sign of TDOA between the synchronized dual microphones. 
+The key idea behind CS-ASL is to turn the localization  into sparse recovery problem of 1-bit  compressive sensing. 
+The proposed design is evaluated through extensive simulations and physical experiments in an indoor test-bed with 30 smartphone nodes. Evaluation results show that CS-ASL  can effectively locate the acoustic source with good robustness.
+
+
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+Compressive Sensing, Acoustic Source Localization,  Dual-Microphone Array, Sparse Recovery
+\end{IEEEkeywords}
+
+
+
+\IEEEpeerreviewmaketitle
+\input{Introduction}
+\input{Model}
+\input{Design}
+%\input{Discussion}
+\input{Result}
+%\input{Relatedwork}
+\input{Conclusion}
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{Main}
+
+\end{document}
