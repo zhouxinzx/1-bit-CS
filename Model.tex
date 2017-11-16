@@ -3,6 +3,13 @@
 
 In our work, we use the dual-microphone smartphones to collect the acoustic signals.
 The binary left/right data is achieved by leveraging the sign of time-difference-of-arrival (TDOA) of the sound at the two phone microphones. Here we bring in the perpendicular bisector of the double microphones, according to the acoustical signal received by smartphone, judging the acoustical source in the left or in the right of the perpendicular bisector. We set that in the clockwise direction if acoustic source in the left we describe the measure data as 0, otherwise if in the right we define it as 1. Compared with traditional method, we use the 1-bit data instead of the concrete TDOA values, which is robust to measurement error.
+As is shown in Fig.1, every lines can divide the space into two parts, when the lines increase to $n$, the space can be divided into $\frac{n^2+n+2}{2}$ parts at best. 
+%As long as the number of the smartphones is adequate,  the area of the subdomain is adequately accurate to represent the source location. 
+Our target is searching for the points in the target subdomain using the 1-bit measure datas. 
+%We make the space gridding with large scale, transform the area into a large number of points.
+%The points inside the target subdomain are sparse compared with the whole points, satisfy the character of compressive sampling.
+%As long as we compress the whole points by 1-bit measure data constantly, finally lead to the points in target subdomain. 
+We regard the points in the target subdomain as the final target points, utilizing the average of these points to determine the location of the acoustical source.
 
   \begin{figure}[!htb]
 	\centering
@@ -16,11 +23,7 @@ The binary left/right data is achieved by leveraging the sign of time-difference
 	\vspace{-5mm}
 \end{figure}
 
-As is shown in Fig.1, every lines can divide the space into two parts, when the lines increase to $n$, the space can be divided into $\frac{n^2+n+2}{2}$ parts at best. As long as the number of the smartphones is adequate,  the area of the subdomain is adequately accurate to represent the source location. 
-Our target is searching for the points in the target subdomain using the 1-bit measure datas. We make the space gridding with large scale, transform the area into a large number of points.
-The points inside the target subdomain are sparse compared with the whole points, satisfy the character of compressive sampling.
-%As long as we compress the whole points by 1-bit measure data constantly, finally lead to the points in target subdomain. 
-We regard the points in the target subdomain as the final target points, utilizing the average of these points to determine the location of the acoustical source.
+
 
 Here, we talk about our 1-bit CS framework, considering the scene in the 2D space with $n$ points and $m$ smartphones, $n$ is large that can present the whole localization area, all points are ${S} = \{ {poin{t_1}}, \cdots ,{poin{t_i}}, \cdots ,{poin{t_n}}\}$, where any node ${poin{t_i}}$ has its location coordinate denoted as $[{x_i},{y_i}]$. The acoustic event occurs at ${O_s}{\rm{ = [}}{x_s},{y_s}]$. As for the $m$ smartphones, we utilize the midperpendicular of the two microphones, transform them to $m$ lines, where the ${lin{e_i}}$ is described as ${a_i}x+{b_i}y+{c_i}=0$, stipulate $a_i$ is a positive number all the time.  And the data we measure from every smartphone can be defined as
 \begin{equation}\label{eq:eps}

@@ -144,8 +144,9 @@ CS-ASL-LR behaves more approach to CS-ASL-BF method, even the bit-flipping numbe
 }
 \caption{\label{Fig3:}The results of simulation.}
 \end{center}
- \vspace{-5mm}
+ \vspace{-4mm}
 \end{figure}
+ \vspace{-1mm}
 
 \subsection{Testbed Experiment}
 In this part, we utilize the testbed experiment to evaluate the performance of our CS-ASL-LR method. We use 30 Redmi smartphones with double microphones as sensors to collect 1-bit datas and connect them through TP-LINK TL-WDR4310 wireless router. We do the experiments for 100 times, every time we deployed the 30 smartphones randomly in an area of 16m$\times$10m, results are demonstrated in Fig.3, blue squares stand for anchor nodes, red circle squares denote the real acoustic sources position and black dots are the estimated location by CS-ASL-LR. An arrow origins from the estimated location of each acoustic source and points to its real position. As shown in Fig.3, most of the estimated locations are close to the ground truth and the errors between them are very small. In our experiment, the acoustic sources got localized with average and maximum error of 0.63 feet and 2.74 feet, respectively. Fig.3 tells that the proposed CS-ASL-LR successfully accomplishes acoustic source localization.
@@ -157,8 +158,13 @@ In this part, we utilize the testbed experiment to evaluate the performance of o
 	\includegraphics[height=4.5cm]{image/lab.eps} 
 	\caption{Testbed experiment}
 	\label{overview}
+ %\vspace{-10mm}
 \end{figure} 
+\vspace{-5mm}
 
- \textbf{Summary:} Considering the parameters including the number of anchors, node location error, angle error and bit-flipping number, simulation results and testbed experiment prove that our methods have a great performance. CS-ASL-BF obtain an accuracy localization result in all fault environment, however, it searches all points every time which slows down the efficiency. CS-ASL-GD based on gradient descent, we make further searching that decrease the final localization error and guarantee the system efficiency even with bit-flipping. CS-ASL-LR takes more step to improve the localization accuracy. Above all, our methods can accomplish localization with robustness.
+%\textbf{Summary:} Considering the parameters including the number of anchors, node location error, angle error and bit-flipping number, simulation results and testbed experiment prove that our methods have a great performance. 
+%CS-ASL-BF obtain an accuracy localization result in all fault environment, however, it searches all points every time which slows down the efficiency.
+%CS-ASL-GD based on gradient descent, we make further searching that decrease the final localization error and guarantee the system efficiency even with bit-flipping. 
+%CS-ASL-LR takes more step to improve the localization accuracy. Above all, our methods can accomplish localization with robustness.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -10,27 +10,8 @@ CS-ASL-BF is based on the idea of brute force searching. Grid meshing leading to
 \begin{equation}\label{eq:eps}
 error_i=sign(ASX_i)-D
 \end{equation}where $1\leq i \leq n$, every point of $n$ maps an error matrix, in that matrix defines none-zero numbers $\bm{nnz{_i}}$ as the cost function of that point. Finally the points with the minimum of cost function are in the target subdomain and their average value is the location we ultimately determine.
-\begin{algorithm}
-\caption{CS-ASL-BF with brute force}
-\KwIn { Coefficient matrix $A$ \\
-\hspace{0.41in} Point matrix $S$\\
-\hspace{0.41in} Measure Data $D$
-}
-\KwOut {Acoustic source location}
 
-\textbf{Step 1:} Initializing the calculated matrix $X \leftarrow 0$;
 
-\textbf{Step 2:} Computing the the cost function($nnz$) of the whole points: \\
-\For{$i \leftarrow 1$ \textbf{to} $n$}
-{
-     Set the $i$th position of $X$ to 1: $X_i=X(i) \leftarrow 1$;\\
-     $ error_i=sign(ASX_i)-D$;\\
-     $nnz_i \leftarrow$ none-zero number of $error_i$;\\
-     $X \leftarrow 0$;\\
-}
-\textbf{Step 3:} Find the points with the minimum $nnz$ value. \\
-\textbf{Step 4:} Determine the target location by the average of points' location in Step 3.
-\end{algorithm}
 
 \subsection{CS-ASL-GD with gradient descent}
 CS-ASL-BF performs extremely well in practical test. It can even obtain a high precision location when bit-flipping or other measure errors occur.
@@ -63,34 +44,7 @@ X=X-\mu *\bigtriangledown
  
  However, in real situations the kinds of error especially bit flipping seriously affect the performance of the system. Since what the gradient descent method search for is optimal points in one part, when bit-flipping occurs, the points we obtain often include several points outside the target sub-region without any handling. Here we  make the points gathering from gradient decease method as suspicious points, then adapt the CS-ASL-BF method to suspicious points for further searching, believe the points with nonzero value in matrix $X$ as the final points in real localization area.
  
- \begin{algorithm}
-\caption{CS-ASL-GD with gradient descent}
-\KwIn { Coefficient matrix $A$ \\
-\hspace{0.41in} Point matrix $S$\\
-\hspace{0.41in} Measure Data $D$\\
-\hspace{0.41in} Maximum number of iterations $maxiter$
-}
-\KwOut {Acoustic source location}
 
-\textbf{Step 1:} Initializing the probability vector $X$:\\
-$\hat{X} \leftarrow 1$;\\
-$X=\hat{X}/\sum\limits_{i=1}^n\hat{X_i}$;\\
-\textbf{Step 2:} Searching for the points with maximum probability in target subdomain: \\
-\For{$i \leftarrow 1$ \textbf{to} $maxiter$}
-{
-     $\varDelta=sign(ASX)-D$;\\
-     $\bigtriangledown=sign((AS)'*\varDelta)$;\\
-     $X=X-\mu*\bigtriangledown$;\\
-     $index=find((X_i==max(X))$;\\
-     $\hat{X}(1:n)=0$;\\
-     $\hat{X}(index)=1$;\\
-     Normalization processing to vector $X$:\\
-     $X=\hat{X}/\sum\limits_{i=1}^n\hat{X_n}$;\\
-     $i=i+1$;\\
-}
-\textbf{Step 3:} Find the points with the maximum probability as the suspicious points in target area. \\
-\textbf{Step 4:} Utilize the CS-ASL-BF method for further filtrating among suspicious points. Believing the average of final filtrated points' location as the target location.
-\end{algorithm}
 
 \subsection{CS-ASL-LR with local refinement}
 In our 1-bit CS framework, we utilize the sampling points in target subdomain to present the acoustic source. CS-ASL-BF  with brute force can find the whole points in target subdomain even occurs bit-filpping, as a result may slow down the system efficiency. CS-ASL-GD with bit fipping tolerance brings in gradient descent, although can get results fast, only determine several points in the target area not the whole points, leading to localization error in certain degree, which makes its accuracy inferior to CS-ASL-BF in high error conditions especially bit-flipping. Here we regard the CS-ASL-BF as the best accuracy  standard, making more efforts to make the accuracy of the CS-ASL more  approach to CS-ASL-BF with high efficiency. Aiming at above question, we have once considered finding the bit flipping nodes in the process of iterations, recover them and localize again by CS-ASL-GD method. However,  CS-ASL-GD has determine a more precise location, repeat work only make the system more complicated. Owing to the area of the target subdomain is adequate small, only make further amelioration searching by CS-ASL-BF method for the points neighbor to the location determined by CS-ASL-GD method can overcome this limit without raising much complexity. Results collect more points belong to the target subdomain leading to a more accurate localization.
